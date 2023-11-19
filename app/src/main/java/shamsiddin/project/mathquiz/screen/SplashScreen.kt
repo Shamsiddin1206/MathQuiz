@@ -20,13 +20,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.delay
 import shamsiddin.project.mathquiz.R
 import shamsiddin.project.mathquiz.navigation.ScreenType
 
 @Composable
-fun SplashScreen(navHostController: NavHostController){
+fun SplashScreen(navController: NavController){
     var startAnimation by remember{ mutableStateOf(false)}
     val alphaAnimation = animateFloatAsState(
         targetValue = if (startAnimation) 1f else 0f,
@@ -37,8 +38,8 @@ fun SplashScreen(navHostController: NavHostController){
     LaunchedEffect(key1 = true){
         startAnimation = true
         delay(4000)
-        navHostController.popBackStack()
-        navHostController.navigate(ScreenType.Level.route)
+        navController.popBackStack()
+        navController.navigate(ScreenType.Level.route)
     }
     SplashView(alpha = alphaAnimation.value)
 }
