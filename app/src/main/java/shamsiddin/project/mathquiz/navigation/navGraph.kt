@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import shamsiddin.project.mathquiz.screen.GameScreen
 import shamsiddin.project.mathquiz.screen.LevelScreen
 import shamsiddin.project.mathquiz.screen.NameScreen
 import shamsiddin.project.mathquiz.screen.SplashScreen
@@ -20,8 +21,8 @@ fun SetNavGraph(navController: NavHostController){
         composable(route = ScreenType.Name.route){
             NameScreen(navController = navController)
         }
-//        composable(route = ScreenType.Home.route){
-//            MainActivity()
-//        }
+        composable(route = ScreenType.Game.route){
+            GameScreen(navController = navController, "easy")
+        }
     }
 }
