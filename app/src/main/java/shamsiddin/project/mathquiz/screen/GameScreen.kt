@@ -1,17 +1,23 @@
 package shamsiddin.project.mathquiz.screen
 
 import android.os.SystemClock
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
@@ -20,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,17 +37,20 @@ import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import shamsiddin.project.mathquiz.MisolMaker
+import shamsiddin.project.mathquiz.MySharedPreferences
 import shamsiddin.project.mathquiz.R
+import shamsiddin.project.mathquiz.navigation.ScreenType
 
 
 @Composable
 @Preview
 fun GameView(){
-    GameScreen(navController = rememberNavController(), "easy")
+    GameScreen(navController = rememberNavController(), "easy", "Shamsiddin")
 }
 
 @Composable
-fun GameScreen(navController: NavController, level: String){
+fun GameScreen(navController: NavController, level: String, name:String){
+    val sharedPreferences = MySharedPreferences.getInstance(LocalContext.current)
     val score = remember { mutableIntStateOf(0) }
     var timelong: Long = 0
     val test = remember {
@@ -59,9 +69,7 @@ fun GameScreen(navController: NavController, level: String){
         }
     }
 
-    val timeClock = rememberCountdownTimerState(initialMillis = timelong)
-
-
+    val timeClock = rememberCountdownTimerState(initialMillis = timelong, navController = navController, level = level, name = name, score = score.intValue, sharedPreferences = sharedPreferences)
 
 
     Column(
@@ -71,7 +79,7 @@ fun GameScreen(navController: NavController, level: String){
     ){
         Box(
             Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .background(Color.White)
         ) {
             Box(
@@ -112,11 +120,88 @@ fun GameScreen(navController: NavController, level: String){
                 Text(text = test.value.c.toString(), fontSize = 36.sp, fontWeight = FontWeight.Normal)
             }
         }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Column(Modifier.fillMaxWidth()) {
+                Row(Modifier.padding(5.dp)) {
+                    Button(
+                        onClick = {
+                            if (test.value.sign=="+"){
+                                score.intValue++
+                            }
+                            test.value = MisolMaker.generate(level)
+                        },
+                        modifier = Modifier
+                            .weight(1f, true)
+                            .padding(5.dp)
+                            .aspectRatio(1f, true),
+                        shape = RoundedCornerShape(10.dp),
+                        colors = ButtonDefaults.buttonColors(Color(android.graphics.Color.parseColor("#FEA21E")))
+                    ) {
+                        Text(text = "+", fontSize = 50.sp, color = Color.White)
+                    }
+                    Button(
+                        onClick = {
+                            if (test.value.sign=="-"){
+                                score.intValue++
+                            }
+                            test.value = MisolMaker.generate(level)
+                        },
+                        modifier = Modifier
+                            .weight(1f, true)
+                            .padding(5.dp)
+                            .aspectRatio(1f, true),
+                        shape = RoundedCornerShape(10.dp),
+                        colors = ButtonDefaults.buttonColors(Color(android.graphics.Color.parseColor("#3378FE")))
+
+                    ) {
+                        Text(text = "-", fontSize = 50.sp, color = Color.White)
+                    }
+                }
+                Row(Modifier.padding(5.dp)) {
+                    Button(
+                        onClick = {
+                            if (test.value.sign=="*"){
+                                score.intValue++
+                            }
+                            test.value = MisolMaker.generate(level)
+                        },
+                        modifier = Modifier
+                            .weight(1f, true)
+                            .padding(5.dp)
+                            .aspectRatio(1f, true),
+                        shape = RoundedCornerShape(10.dp),
+                        colors = ButtonDefaults.buttonColors(Color(android.graphics.Color.parseColor("#00CE77")))
+                    ) {
+                        Text(text = "*", fontSize = 50.sp, color = Color.White)
+                    }
+                    Button(
+                        onClick = {
+                            if (test.value.sign=="/"){
+                                score.intValue++
+                            }
+                            test.value = MisolMaker.generate(level)
+                        },
+                        modifier = Modifier
+                            .weight(1f, true)
+                            .padding(5.dp)
+                            .aspectRatio(1f, true),
+                        shape = RoundedCornerShape(10.dp),
+                        colors = ButtonDefaults.buttonColors(Color(android.graphics.Color.parseColor("#FE462B")))
+
+                    ) {
+                        Text(text = "/", fontSize = 50.sp, color = Color.White)
+                    }
+                }
+            }
+        }
     }
 }
 
 @Composable
-fun rememberCountdownTimerState(initialMillis: Long, step: Long = 1000): MutableState<Long> {
+fun rememberCountdownTimerState(initialMillis: Long, step: Long = 1000, navController: NavController, level:String, score:Int, name:String, sharedPreferences: MySharedPreferences): MutableState<Long> {
     val timeLeft = remember { mutableLongStateOf(initialMillis) }
     LaunchedEffect(initialMillis, step){
         val startTime = SystemClock.uptimeMillis()
@@ -126,6 +211,9 @@ fun rememberCountdownTimerState(initialMillis: Long, step: Long = 1000): Mutable
             timeLeft.value /= 1000
             delay(step.coerceAtMost(timeLeft.value))
         }
+        sharedPreferences.setData(level, score)
+        Log.d("TAG", "rememberCountdownTimerState: $score")
+        navController.navigate(route = "result_screen/${level}/${name}/${score}")
     }
     return timeLeft
 }

@@ -69,7 +69,7 @@ fun LevelScreen(navController: NavController){
 @Composable
 fun LevelButton(text: String, color: String, navController: NavController){
     Button(
-        onClick = { navController.navigate(ScreenType.Name.route) },
+        onClick = { navController.navigate(route = "name_screen/${text.lowercase().toString()}") },
         modifier = Modifier
             .width(170.dp)
             .height(70.dp)

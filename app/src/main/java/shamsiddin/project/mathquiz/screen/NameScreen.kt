@@ -21,19 +21,20 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import shamsiddin.project.mathquiz.navigation.ScreenType
+import java.util.logging.Level
 
 @Composable
 @Preview
 fun NameView(){
-    NameScreen(navController = rememberNavController())
+    NameScreen(navController = rememberNavController(), "easy")
 }
 
 @Composable
-fun NameScreen(navController: NavController){
+fun NameScreen(navController: NavController, level: String){
     Box(modifier = Modifier.fillMaxSize().background(Color.White)){
         Row(Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
             Button(
-                onClick = {navController.navigate(ScreenType.Game.route)},
+                onClick = {navController.navigate(route =  "game_screen/${level}/Shamsiddin")},
                 modifier = Modifier
                     .width(150.dp)
                     .height(70.dp),

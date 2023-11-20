@@ -21,16 +21,19 @@ class MisolMaker private constructor(
 
             when(level){
                 "easy" -> {
-                    variable1 = getNumbers(11)[0]
-                    variable2 = getNumbers(11)[1]
+                    val nums = getNumbers(11, sign)
+                    variable1 = nums[0]
+                    variable2 = nums[1]
                 }
                 "medium" -> {
-                    variable1 = getNumbers(21)[0]
-                    variable2 = getNumbers(21)[1]
+                    val nums = getNumbers(11, sign)
+                    variable1 = nums[0]
+                    variable2 = nums[1]
                 }
                 "hard" -> {
-                    variable1 = getNumbers(51)[0]
-                    variable2 = getNumbers(51)[1]
+                    val nums = getNumbers(11, sign)
+                    variable1 = nums[0]
+                    variable2 = nums[1]
                 }
             }
 
@@ -52,15 +55,22 @@ class MisolMaker private constructor(
             return MisolMaker(a = variable1, b = variable2, c = answer, sign = sign)
         }
 
-        fun getNumbers(limit: Int): MutableList<Int>{
+        fun getNumbers(limit: Int, sign: String): MutableList<Int>{
             var a = Random.nextInt(1, limit)
             var b = Random.nextInt(1, limit)
-            while (a%b!=0){
-                a = Random.nextInt(1, limit)
-                b = Random.nextInt(1, limit)
+            if (sign=="+" || sign=="*"){
+                while (a==2 && b==2){
+                    a = Random.nextInt(1, limit)
+                    b = Random.nextInt(1, limit)
+                }
+            }
+            if (sign=="/"){
+                while ((a%b) != 0){
+                    a = Random.nextInt(1, limit)
+                    b = Random.nextInt(1, limit)
+                }
             }
             return mutableListOf(a, b)
         }
     }
-
 }
