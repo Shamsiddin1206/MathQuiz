@@ -69,7 +69,7 @@ fun GameScreen(navController: NavController, level: String, name:String){
         }
     }
 
-    val timeClock = rememberCountdownTimerState(initialMillis = timelong, navController = navController, level = level, name = name, score = score.intValue, sharedPreferences = sharedPreferences)
+    val timeClock = rememberCountdownTimerState(initialMillis = timelong, navController = navController, level = level, name = name, score = score, sharedPreferences = sharedPreferences)
 
 
     Column(
@@ -201,7 +201,7 @@ fun GameScreen(navController: NavController, level: String, name:String){
 }
 
 @Composable
-fun rememberCountdownTimerState(initialMillis: Long, step: Long = 1000, navController: NavController, level:String, score:Int, name:String, sharedPreferences: MySharedPreferences): MutableState<Long> {
+fun rememberCountdownTimerState(initialMillis: Long, step: Long = 1000, navController: NavController, level:String, score:MutableIntState, name:String, sharedPreferences: MySharedPreferences): MutableState<Long> {
     val timeLeft = remember { mutableLongStateOf(initialMillis) }
     LaunchedEffect(initialMillis, step){
         val startTime = SystemClock.uptimeMillis()
@@ -211,9 +211,9 @@ fun rememberCountdownTimerState(initialMillis: Long, step: Long = 1000, navContr
             timeLeft.value /= 1000
             delay(step.coerceAtMost(timeLeft.value))
         }
-        sharedPreferences.setData(level, score)
-        Log.d("TAG", "rememberCountdownTimerState: $score")
-        navController.navigate(route = "result_screen/${level}/${name}/${score}")
+        sharedPreferences.setData(level, score.intValue)
+        Log.d("TAG", "rememberCountdownTimerState: ${score.intValue}")
+        navController.navigate(route = "result_screen/${level}/${name}/${score.intValue}")
     }
     return timeLeft
 }
