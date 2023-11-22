@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import shamsiddin.project.mathquiz.MySharedPreferences
 import shamsiddin.project.mathquiz.R
 import shamsiddin.project.mathquiz.navigation.ScreenType
 
@@ -41,6 +43,8 @@ fun LevelView(){
 
 @Composable
 fun LevelScreen(navController: NavController){
+
+    val sharedPreferences = MySharedPreferences.getInstance(LocalContext.current)
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -52,14 +56,20 @@ fun LevelScreen(navController: NavController){
 //            contentDescription = "level",
 //            contentScale = ContentScale.FillBounds
 //        )
-        Row(Modifier.fillMaxWidth().padding(20.dp), verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.Center) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(20.dp), verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.Center) {
             Image(modifier = Modifier.size(60.dp), painter = painterResource(id = R.drawable.mainlogo), contentDescription = "level")
         }
         Row(modifier = Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
             Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                 LevelButton(text = "Easy", color = "#4CAF50", navController = navController)
+                Text(text = "Record: ${sharedPreferences.getData("easy")}")
                 LevelButton(text = "Medium", color = "#DFB22B", navController = navController)
+                Text(text = "Record: ${sharedPreferences.getData("medium")}")
                 LevelButton(text = "Hard", color = "#EC5448", navController = navController)
+                Text(text = "Record: ${sharedPreferences.getData("hard")}")
             }
         }
     }
@@ -69,11 +79,11 @@ fun LevelScreen(navController: NavController){
 @Composable
 fun LevelButton(text: String, color: String, navController: NavController){
     Button(
-        onClick = { navController.navigate(route = "name_screen/${text.lowercase().toString()}") },
+        onClick = { navController.navigate(route = "game_screen/${text.lowercase().toString()}") },
         modifier = Modifier
             .width(170.dp)
             .height(70.dp)
-            .padding(10.dp),
+            .padding(0.dp, 15.dp, 0.dp, 0.dp),
         border = BorderStroke(width = 2.dp, color = Color(android.graphics.Color.parseColor(color))),
         colors = ButtonDefaults.buttonColors(Color.White)
     ) {

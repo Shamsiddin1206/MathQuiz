@@ -39,17 +39,16 @@ import kotlinx.coroutines.isActive
 import shamsiddin.project.mathquiz.MisolMaker
 import shamsiddin.project.mathquiz.MySharedPreferences
 import shamsiddin.project.mathquiz.R
-import shamsiddin.project.mathquiz.navigation.ScreenType
 
 
 @Composable
 @Preview
 fun GameView(){
-    GameScreen(navController = rememberNavController(), "easy", "Shamsiddin")
+    GameScreen(navController = rememberNavController(), "easy")
 }
 
 @Composable
-fun GameScreen(navController: NavController, level: String, name:String){
+fun GameScreen(navController: NavController, level: String){
     val sharedPreferences = MySharedPreferences.getInstance(LocalContext.current)
     val score = remember { mutableIntStateOf(0) }
     val questionsNumber = remember { mutableIntStateOf(0) }
@@ -70,7 +69,7 @@ fun GameScreen(navController: NavController, level: String, name:String){
         }
     }
 
-    val timeClock = rememberCountdownTimerState(initialMillis = timelong, navController = navController, level = level, name = name, score = score, sharedPreferences = sharedPreferences, questions = questionsNumber)
+    val timeClock = rememberCountdownTimerState(initialMillis = timelong, navController = navController, level = level, score = score, sharedPreferences = sharedPreferences, questions = questionsNumber)
 
 
     Column(
@@ -206,7 +205,15 @@ fun GameScreen(navController: NavController, level: String, name:String){
 }
 
 @Composable
-fun rememberCountdownTimerState(initialMillis: Long, step: Long = 1000, navController: NavController, level:String, score:MutableIntState, name:String, sharedPreferences: MySharedPreferences, questions: MutableIntState): MutableState<Long> {
+fun rememberCountdownTimerState(
+    initialMillis: Long,
+    step: Long = 1000,
+    navController: NavController,
+    level: String,
+    score: MutableIntState,
+    sharedPreferences: MySharedPreferences,
+    questions: MutableIntState
+): MutableState<Long> {
     val timeLeft = remember { mutableLongStateOf(initialMillis) }
     LaunchedEffect(initialMillis, step){
         val startTime = SystemClock.uptimeMillis()
@@ -218,7 +225,7 @@ fun rememberCountdownTimerState(initialMillis: Long, step: Long = 1000, navContr
         }
         sharedPreferences.setData(level, score.intValue)
         Log.d("TAG", "rememberCountdownTimerState: ${score.intValue}")
-        navController.navigate(route = "result_screen/${level}/${name}/${score.intValue}/${questions.intValue}")
+        navController.navigate(route = "result_screen/${level}/${score.intValue}/${questions.intValue}")
     }
     return timeLeft
 }
