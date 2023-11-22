@@ -223,7 +223,6 @@ fun rememberCountdownTimerState(
             timeLeft.value /= 1000
             delay(step.coerceAtMost(timeLeft.value))
         }
-        sharedPreferences.setData(level, score.intValue)
         Log.d("TAG", "rememberCountdownTimerState: ${score.intValue}")
         navController.navigate(route = "result_screen/${level}/${score.intValue}/${questions.intValue}")
     }

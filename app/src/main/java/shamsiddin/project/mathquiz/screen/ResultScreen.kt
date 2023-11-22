@@ -44,8 +44,14 @@ fun ResultScreen(navController: NavController, level:String, score:Int, question
     val sharedPreferences = MySharedPreferences.getInstance(LocalContext.current)
     Log.d("Results", "ResultScreen: ${sharedPreferences.getData(level)}")
     val mySharedPreferences = MySharedPreferences.getInstance(LocalContext.current)
-    val text = if (score>sharedPreferences.getData(level)) "Results" else "New Record!"
-    if (score>sharedPreferences.getData(level)) sharedPreferences.setData(level, score)
+    var text: String = ""
+    Log.d("TAG", "ResultScreen: ${score}, ${sharedPreferences.getData(level)}")
+    if (sharedPreferences.getData(level)<score){
+        sharedPreferences.setData(level, score)
+        text = "New Record!"
+    }else{
+        text = "Results"
+    }
 
     BackHandler(enabled = true, onBack = {
         navController.navigate(ScreenType.Level.route)
