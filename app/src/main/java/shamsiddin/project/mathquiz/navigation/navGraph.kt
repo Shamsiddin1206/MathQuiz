@@ -50,12 +50,16 @@ fun SetNavGraph(navController: NavHostController){
             },
             navArgument("score"){
                 type = NavType.IntType
+            },
+            navArgument("questionsNumber"){
+                type = NavType.IntType
             }
         )){entry ->
             val level = entry.arguments?.getString("level")!!
             val name = entry.arguments?.getString("name")!!
             val score = entry.arguments?.getInt("score")!!
-            ResultScreen(navController = navController, level, name, score)
+            val questionsNumber = entry.arguments?.getInt("questionsNumber")!!
+            ResultScreen(navController = navController, level, name, score, questionsNumber)
         }
     }
 }

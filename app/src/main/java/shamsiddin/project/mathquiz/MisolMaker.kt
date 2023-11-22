@@ -58,6 +58,12 @@ class MisolMaker private constructor(
         fun getNumbers(limit: Int, sign: String): MutableList<Int>{
             var a = Random.nextInt(1, limit)
             var b = Random.nextInt(1, limit)
+            if ((a==1 && b==1) && (sign=="*" || sign=="/")){
+                while (a==2 && b==2){
+                    a = Random.nextInt(1, limit)
+                    b = Random.nextInt(1, limit)
+                }
+            }
             if (sign=="+" || sign=="*"){
                 while (a==2 && b==2){
                     a = Random.nextInt(1, limit)

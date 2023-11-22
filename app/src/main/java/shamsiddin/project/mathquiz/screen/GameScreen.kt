@@ -52,6 +52,7 @@ fun GameView(){
 fun GameScreen(navController: NavController, level: String, name:String){
     val sharedPreferences = MySharedPreferences.getInstance(LocalContext.current)
     val score = remember { mutableIntStateOf(0) }
+    val questionsNumber = remember { mutableIntStateOf(0) }
     var timelong: Long = 0
     val test = remember {
         mutableStateOf(MisolMaker.generate(level))
@@ -69,7 +70,7 @@ fun GameScreen(navController: NavController, level: String, name:String){
         }
     }
 
-    val timeClock = rememberCountdownTimerState(initialMillis = timelong, navController = navController, level = level, name = name, score = score, sharedPreferences = sharedPreferences)
+    val timeClock = rememberCountdownTimerState(initialMillis = timelong, navController = navController, level = level, name = name, score = score, sharedPreferences = sharedPreferences, questions = questionsNumber)
 
 
     Column(
@@ -131,6 +132,7 @@ fun GameScreen(navController: NavController, level: String, name:String){
                             if (test.value.sign=="+"){
                                 score.intValue++
                             }
+                            questionsNumber.intValue++
                             test.value = MisolMaker.generate(level)
                         },
                         modifier = Modifier
@@ -147,6 +149,7 @@ fun GameScreen(navController: NavController, level: String, name:String){
                             if (test.value.sign=="-"){
                                 score.intValue++
                             }
+                            questionsNumber.intValue++
                             test.value = MisolMaker.generate(level)
                         },
                         modifier = Modifier
@@ -166,6 +169,7 @@ fun GameScreen(navController: NavController, level: String, name:String){
                             if (test.value.sign=="*"){
                                 score.intValue++
                             }
+                            questionsNumber.intValue++
                             test.value = MisolMaker.generate(level)
                         },
                         modifier = Modifier
@@ -182,6 +186,7 @@ fun GameScreen(navController: NavController, level: String, name:String){
                             if (test.value.sign=="/"){
                                 score.intValue++
                             }
+                            questionsNumber.intValue++
                             test.value = MisolMaker.generate(level)
                         },
                         modifier = Modifier
@@ -201,7 +206,7 @@ fun GameScreen(navController: NavController, level: String, name:String){
 }
 
 @Composable
-fun rememberCountdownTimerState(initialMillis: Long, step: Long = 1000, navController: NavController, level:String, score:MutableIntState, name:String, sharedPreferences: MySharedPreferences): MutableState<Long> {
+fun rememberCountdownTimerState(initialMillis: Long, step: Long = 1000, navController: NavController, level:String, score:MutableIntState, name:String, sharedPreferences: MySharedPreferences, questions: MutableIntState): MutableState<Long> {
     val timeLeft = remember { mutableLongStateOf(initialMillis) }
     LaunchedEffect(initialMillis, step){
         val startTime = SystemClock.uptimeMillis()
@@ -213,7 +218,7 @@ fun rememberCountdownTimerState(initialMillis: Long, step: Long = 1000, navContr
         }
         sharedPreferences.setData(level, score.intValue)
         Log.d("TAG", "rememberCountdownTimerState: ${score.intValue}")
-        navController.navigate(route = "result_screen/${level}/${name}/${score.intValue}")
+        navController.navigate(route = "result_screen/${level}/${name}/${score.intValue}/${questions.intValue}")
     }
     return timeLeft
 }
