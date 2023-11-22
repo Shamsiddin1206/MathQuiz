@@ -26,7 +26,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,7 +36,6 @@ import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import shamsiddin.project.mathquiz.MisolMaker
-import shamsiddin.project.mathquiz.MySharedPreferences
 import shamsiddin.project.mathquiz.R
 
 
@@ -49,7 +47,6 @@ fun GameView(){
 
 @Composable
 fun GameScreen(navController: NavController, level: String){
-    val sharedPreferences = MySharedPreferences.getInstance(LocalContext.current)
     val score = remember { mutableIntStateOf(0) }
     val questionsNumber = remember { mutableIntStateOf(0) }
     var timelong: Long = 0
@@ -69,7 +66,7 @@ fun GameScreen(navController: NavController, level: String){
         }
     }
 
-    val timeClock = rememberCountdownTimerState(initialMillis = timelong, navController = navController, level = level, score = score, sharedPreferences = sharedPreferences, questions = questionsNumber)
+    val timeClock = rememberCountdownTimerState(initialMillis = timelong, navController = navController, level = level, score = score, questions = questionsNumber)
 
 
     Column(
@@ -211,7 +208,6 @@ fun rememberCountdownTimerState(
     navController: NavController,
     level: String,
     score: MutableIntState,
-    sharedPreferences: MySharedPreferences,
     questions: MutableIntState
 ): MutableState<Long> {
     val timeLeft = remember { mutableLongStateOf(initialMillis) }
@@ -220,8 +216,8 @@ fun rememberCountdownTimerState(
         while (isActive && timeLeft.longValue>0){
             val duration = (SystemClock.uptimeMillis() - startTime).coerceAtLeast(0)
             timeLeft.longValue = (initialMillis - duration).coerceAtLeast(0)
-            timeLeft.value /= 1000
-            delay(step.coerceAtMost(timeLeft.value))
+            timeLeft.longValue /= 1000
+            delay(step.coerceAtMost(timeLeft.longValue))
         }
         Log.d("TAG", "rememberCountdownTimerState: ${score.intValue}")
         navController.navigate(route = "result_screen/${level}/${score.intValue}/${questions.intValue}")
